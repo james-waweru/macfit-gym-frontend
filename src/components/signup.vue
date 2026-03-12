@@ -5,15 +5,53 @@
     required: value => !!value || 'Required.',
     min: v => v.length >= 8 || 'Min 8 characters',
     emailMatch: () => (`The email and password you entered don't match`),
+    passwordMatch: () => password === confirmPassword || 'Passwords must match'
   }
 
   const show1 = ref(false)
   const show2 = ref(true)
   const password = ref(null)
+  
 
   const show1confirm= ref(false)
   const confirmPassword = ref(null)
 
+  //models
+  const firstname = ref(null)
+  const lastname = ref(null)
+  const email = ref(null)
+  const phone = ref(null)
+  const gender = ref(null)
+  const dob = ref(null)
+  const gymLocations = ref(null)
+
+
+  function signUp () {
+    //creat user object
+  const userDetails = {
+    name: firstname.value + lastname.value ,
+    email: email.value ,
+    phone: phone.value ,
+    gender: gender.value ,
+    dob: dob.value ,
+    gymLocations: gymLocations.value ,
+    password: password.value
+
+  }
+
+  //store this data
+
+    try{
+        localStorage.setItem('userDetails', JSON.stringify(userDetails))
+
+    }
+    catch (err){ console.error('Sign Up Porcess Failed', err)
+    
+    }
+
+}
+
+  
  
 
 </script>
@@ -25,12 +63,15 @@
                 <v-form>
                     <v-row>
                         <v-col md="12">
-                            <v-icon color="#CFD0D6"  icon="mdi-weight-lifter" size="x-large" class="mt-8"></v-icon>
+                            <v-img src="/favicon.ico" width="40%" height="40%"></v-img>
                         </v-col>
                     </v-row>
                     <v-row>
                         <v-col>
-                            <div class="text-title-large font-weght-medium">Sign Up</div>
+                            <div class="text-title-large font-weght-medium" 
+                            variant="elevated"
+                            
+                            >Sign Up</div>
                         </v-col>
                     </v-row>
 
@@ -39,9 +80,7 @@
                             <div>First Name</div>
                         </v-col>
                         <v-col md="6">
-                            <v-text-field> 
-
-                            </v-text-field>
+                            <v-text-field variant="outlined" v-model="firstname"></v-text-field>
                         </v-col>
                     </v-row>
 
@@ -50,7 +89,7 @@
                             <div>Last Name</div>
                         </v-col>
                         <v-col md="6">
-                            <v-text-field> 
+                            <v-text-field variant="outlined" v-model="lastname"> 
                             </v-text-field>
                         </v-col>
                     </v-row>
@@ -60,9 +99,7 @@
                             <div>E-mail</div>
                         </v-col>
                         <v-col md="6">
-                            <v-text-field> 
-
-                            </v-text-field>
+                            <v-text-field variant="outlined" v-model="email"></v-text-field>
                         </v-col>
                     </v-row>
 
@@ -71,7 +108,7 @@
                             <div>Phone</div>
                         </v-col>
                         <v-col md="6">
-                            <v-text-field variant="outlined" type="number"> 
+                            <v-text-field variant="outlined" type="number" v-model="phone"> 
 
                             </v-text-field>
                         </v-col>
@@ -82,7 +119,7 @@
                             <div>Gender</div>
                         </v-col>
                         <v-col md="6">
-                            <v-radio-group inline>
+                            <v-radio-group inline v-model="gender">
                                     <v-radio label="Male" value="male"></v-radio>
                                     <v-radio label="Female" value="female"></v-radio>
                             </v-radio-group>
@@ -94,7 +131,10 @@
                             <div>Date of Birth</div>
                         </v-col>
                         <v-col md="6">
-                        <v-date-input variant="outlined"></v-date-input>
+                        <v-date-input 
+                            variant="outlined" 
+                            v-model="dob"
+                            ></v-date-input>
                         </v-col>
                     </v-row>
 
@@ -106,6 +146,7 @@
                             <v-select
                                 label="Select"
                                 :items="['', 'CBD','Madaraka', 'Westlands', 'Buruburu']"
+                                v-model="gymLocations"
                             ></v-select>
                         </v-col>
                     </v-row>
@@ -137,7 +178,7 @@
                             <v-text-field 
                                 v-model="confirmPassword"
                                 :append-icon="show1confirm ? 'mdi-eye' : 'mdi-eye-off'"
-                                :rules="[rules.required, rules.min]"
+                                :rules="[rules.required, rules.min, rules.passwordMatch]"
                                 :type="show1confirm ? 'text' : 'password'"
                                 variant="outlined"
                                 label="Normal with hint text"
@@ -150,13 +191,17 @@
 
                     <v-row>
                         <v-col md="12">
-                            <v-btn color="#3A4B68" variant="elevated" width="50%">Log In</v-btn>
+                            <v-btn color="#3A4B68" variant="elevated" width="50%"
+                            @click="signUp"
+                            >Sign Up</v-btn>
                         </v-col>
                     </v-row>
 
                     <v-row>
                         <v-col md="12">
-                            <div>New to MacFit? Create an Account</div>
+                            <div>Already have an Account? 
+                                <router-link to="/login">Log In</router-link>
+                            </div>
                         </v-col>
                     </v-row>
                 </v-form>

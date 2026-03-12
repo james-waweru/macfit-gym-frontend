@@ -1,6 +1,9 @@
 
 <script setup>
   import { ref } from 'vue'
+  import {useRouter} from "vue-router"
+
+  const router = useRouter();
 
   const rules = {
     required: value => !!value || 'Required.',
@@ -11,7 +14,28 @@
   const show1 = ref(false)
   const show2 = ref(true)
   const password = ref(null)
+  const username = ref(null)
+
+  //login function
+
+  function login () {
+
+    //check user details
+    const userDetails = JSON.parse(localStorage.getItem('userDetails'))
+    
+    if (username.value == userDetails.email && password.value == userDetails.password){
+    //proceed to homepage
+    router.push('/homepage')
+    localStorage.setItem("isLoggedIn", true);
+
+
+  }else{
+    console.log ('Invalid Credentials. Try Again')
+  }
+}
+
 </script>
+
 
 <template>
     <v-container width="50%" class="text-center mt-12" >
@@ -30,11 +54,12 @@
                     </v-row>
 
                     <v-row>
-                        <v-col md="6" class="text-title-large font-weght-medium text-right">
+                        <v-col md="6" class="text-title-large font-weght-medium text-right"
+                        v-model="username">
                             <div>Username</div>
                         </v-col>
                         <v-col md="6">
-                            <v-text-field> 
+                            <v-text-field v-model="username"> 
 
                             </v-text-field>
                         </v-col>
@@ -51,8 +76,6 @@
                                 :rules="[rules.required, rules.min]"
                                 :type="show1 ? 'text' : 'password'"
                                 variant="outlined"
-                                label="Normal with hint text"
-                                name="input-10-1"
                                 >
                                 
                             </v-text-field>
@@ -61,13 +84,18 @@
 
                     <v-row>
                         <v-col md="12">
-                            <v-btn color="#3A4B68" variant="elevated" width="50%">Log In</v-btn>
+                            <v-btn color="#3A4B68" variant="elevated" width="50%"
+                            @click="login">Log In</v-btn>
                         </v-col>
                     </v-row>
 
                     <v-row>
                         <v-col md="12">
-                            <div>New to MacFit? Create an Account</div>
+                            <div >  
+                                New to MacFit? 
+                                <router-link to="/signup">Create an Account  </router-link>
+                                 
+                            </div>
                         </v-col>
                     </v-row>
                 </v-form>
