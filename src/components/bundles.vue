@@ -5,7 +5,7 @@
   const router = useRouter();
 
   const showBundleDialog = ref(false)
-  const log = localStorage.getItem( "isLoggedIn")
+  const log = localStorage.getItem( "authToken")
   const selectedBundle = ref(null)
   const selectedPrice = ref(null)
 
@@ -22,12 +22,12 @@
 
   function subscribe(){
     //check user details
-    const userDetails = JSON.parse(localStorage.getItem('userDetails'))
+    const userDetails = JSON.parse(localStorage.getItem('user'))
     userDetails.subscripton = {
         name: selectedBundle.value,
         price: selectedPrice.value
     }
-    localStorage.setItem('userDetails', JSON.stringify(userDetails))
+    localStorage.setItem('user', JSON.stringify(userDetails))
     showBundleDialog.value = false
   }
 

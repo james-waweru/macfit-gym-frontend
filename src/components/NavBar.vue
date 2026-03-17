@@ -1,14 +1,14 @@
 <script setup>
 import {useRouter} from "vue-router";
+import {useAuth} from '../services/auth'
 
 const router = useRouter();
+const { logout } = useAuth()
 
-const log = localStorage.getItem( "isLoggedIn")
+const log = localStorage.getItem( "authToken")
 const isAdmin = true
-function logout(){
-    localStorage.removeItem( "isLoggedIn")
-    router.push('/')
-}
+
+
 </script>
 
 <template>

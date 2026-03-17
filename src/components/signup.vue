@@ -1,5 +1,10 @@
 <script setup>
-  import { ref } from 'vue'
+    import { ref } from 'vue'
+    import { useRouter } from "vue-router";
+    import {useAuth} from '../services/auth'
+
+const router = useRouter();
+const { register, loading, error } = useAuth()
 
   const rules = {
     required: value => !!value || 'Required.',
@@ -27,29 +32,34 @@
 
 
   function signUp () {
-    //creat user object
-  const userDetails = {
-    name: firstname.value + lastname.value ,
-    email: email.value ,
-    phone: phone.value ,
-    gender: gender.value ,
-    dob: dob.value ,
-    gymLocations: gymLocations.value ,
-    password: password.value
+   const signUp = async () => {
 
-  }
+    loading.value = true;
+    error.value = "";
 
-  //store this data
+    const formData = new FormData();
+    formData.append("name", firstName.value +' '+ lastName.value,);
+    formData.append("email", email.value);
+    formData.append("phone", phoneNumber.value);
+    formData.append("dob", dob.value);
+    formData.append("gender", gender.value);
+    formData.append("gymLocation", gymLocation.value);
+    formData.append("password", password.value);
+    formData.append("role_id", 4);
 
-    try{
-        localStorage.setItem('userDetails', JSON.stringify(userDetails))
-
-    }
-    catch (err){ console.error('Sign Up Porcess Failed', err)
+    try {
+        await register(formData)
     
+        // Redirect after successful signup
+        router.push('/homepage').then(() => {
+            router.go(0); // Reloads the current route
+        });
+    } catch (err) {
+        // Error is already handled by the auth service
+        console.error('Sign up failed', err)
     }
-
-}
+};
+  }
 
   
  

@@ -4,6 +4,8 @@
   import {useRouter} from "vue-router"
 
   const router = useRouter();
+  const { login, loading, error } = useAuth()
+
 
   const rules = {
     required: value => !!value || 'Required.',
@@ -18,21 +20,30 @@
 
   //login function
 
-  function login () {
-
-    //check user details
-    const userDetails = JSON.parse(localStorage.getItem('userDetails'))
-    
-    if (username.value == userDetails.email && password.value == userDetails.password){
-    //proceed to homepage
-    router.push('/homepage')
-    localStorage.setItem("isLoggedIn", true);
-
-
-  }else{
-    console.log ('Invalid Credentials. Try Again')
+async function handleLogin() {
+  
+  if (!username.value || !password.value) {
+    console.error('Email and password are required')
+    return
+  }
+  
+  try {
+    await login({
+      email: username.value,
+      password: password.value
+    })
+   
+    // Redirect after successful login
+    router.push('/homepage').then(() => {
+        router.go(0); // Reloads the current route
+    });
+  } catch (err) {
+    // Error is already handled by the auth service
+    console.error('Login failed', err)
   }
 }
+
+
 
 </script>
 
@@ -85,7 +96,7 @@
                     <v-row>
                         <v-col md="12">
                             <v-btn color="#3A4B68" variant="elevated" width="50%"
-                            @click="login">Log In</v-btn>
+                            @click="handleLogin">Log In</v-btn>
                         </v-col>
                     </v-row>
 
